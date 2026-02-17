@@ -8,7 +8,7 @@ export async function POST(
     const { id } = await params;
     const body = await req.json();
 
-    const success = saveOpenAnswer(id, body.text);
+    const success = await saveOpenAnswer(id, body.text);
 
     if (!success) {
         return NextResponse.json({ error: 'Session not found' }, { status: 404 });

@@ -15,9 +15,9 @@ export async function POST(
     let success = false;
 
     if (body.type === 'cognitive') {
-        success = saveCognitiveAnswer(id, body.data);
+        success = await saveCognitiveAnswer(id, body.data);
     } else {
-        success = saveAnswer(id, body.data);
+        success = await saveAnswer(id, body.data);
     }
 
     if (!success) {

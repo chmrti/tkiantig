@@ -7,7 +7,7 @@ export async function POST(
 ) {
     const { id } = await params;
 
-    const score = completeSession(id);
+    const score = await completeSession(id);
 
     if (!score) {
         return NextResponse.json({ error: 'Session not found' }, { status: 404 });

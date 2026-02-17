@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.96.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.574.0",
     "next": "^16.1.6",
