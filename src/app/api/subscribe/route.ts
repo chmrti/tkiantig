@@ -23,21 +23,31 @@ export async function POST(req: NextRequest) {
 
         // Send email
         const { data, error } = await resend.emails.send({
-            from: 'TKi Team <onboarding@resend.dev>', // Should use a verified domain in prod
+            from: 'TKi <onboarding@resend.dev>', // Should use a verified domain in prod
             to: [email],
-            subject: 'Bienvenue sur TKi - Le futur du recrutement',
+            subject: 'Votre place est réservée.',
             html: `
-                <div style="font-family: sans-serif; color: #333;">
-                    <h1 style="font-family: serif; color: #e8390e;">Bienvenue chez TKi.</h1>
-                    <p>Merci de rejoindre le mouvement du recrutement post-IA.</p>
-                    <p>Vous faites partie des premiers inscrits à notre plateforme.</p>
-                    <br/>
-                    <p><strong>Prochaine étape :</strong></p>
-                    <p>Si ce n'est pas déjà fait, passez votre test comportemental complet pour obtenir votre profil (valable à vie).</p>
-                    <p><a href="https://tkiantig.vercel.app/test" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Passer le test TKi</a></p>
-                    <br/>
-                    <p>À très vite,</p>
-                    <p>L'équipe TKi</p>
+                <div style="font-family: sans-serif; color: #111; max-width: 600px; margin: 0 auto; padding: 20px;">
+                    <h1 style="font-family: serif; color: #e8390e; font-size: 24px; margin-bottom: 24px;">Bienvenue dans le recrutement post-IA.</h1>
+                    
+                    <p style="line-height: 1.6; color: #444;">L'IA a banalisé l'excellence académique et la perfection syntaxique. Ce qu'elle ne peut pas reproduire, c'est votre <strong>signature décisionnelle</strong>.</p>
+                    
+                    <p style="line-height: 1.6; color: #444;">Vous avez fait le premier pas en rejoignant la liste d'attente TKi.</p>
+                    
+                    <div style="background: #f9f9f9; border-left: 3px solid #e8390e; padding: 15px; margin: 25px 0;">
+                        <p style="margin: 0; font-weight: 500; color: #111;">La prochaine étape est critique.</p>
+                        <p style="margin: 8px 0 0; font-size: 14px; color: #666; line-height: 1.5;">Nous ouvrons l'accès aux profils complets au compte-gouttes. Pour garantir votre place prioritaire, vous devez disposer d'un profil comportemental actif.</p>
+                    </div>
+
+                    <p style="line-height: 1.6; color: #444; margin-bottom: 30px;">La simulation dure 15 minutes. Elle ne demande aucune compétence, juste votre instinct.</p>
+                    
+                    <div style="text-align: center; margin-bottom: 40px;">
+                        <a href="https://tkiantig.vercel.app/test" style="background: #0f0f0f; color: #fff; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 500; display: inline-block;">Sécuriser mon profil maintenant →</a>
+                    </div>
+                    
+                    <p style="font-family: serif; font-style: italic; color: #888; font-size: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
+                        "Ceci n'est pas un test. C'est une preuve de votre humanité."
+                    </p>
                 </div>
             `,
         });
