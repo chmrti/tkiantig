@@ -3,17 +3,20 @@ import { useTestStore } from '@/lib/store';
 import { DYNAMICS } from '@/lib/data';
 import { computeScores } from '@/lib/scoring';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function ResultPage() {
+function ResultContent() {
     const { answers, cogAnswers } = useTestStore();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [scores, setScores] = useState<Record<string, number>>({});
 
-    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-    const isDebug = searchParams?.get('debug') === 'true';
+    // Use Next.js useSearchParams for safer client-side access
+    const isDebug = searchParams.get('debug') === 'true';
 
     useEffect(() => {
+        // Redirect if no answers and not in debug mode
         if (answers.length === 0 && !isDebug) {
             router.replace('/');
             return;
@@ -22,7 +25,7 @@ export default function ResultPage() {
         const calculatedScores = computeScores(answers, cogAnswers);
         setScores(calculatedScores);
 
-        // Mock data for debug
+        // Mock data for debug if no real data exists
         if (isDebug && Object.keys(calculatedScores).length === 0) {
             setScores({
                 VD: 75, TA: 40, PA: 60, RS: 85,
@@ -31,6 +34,7 @@ export default function ResultPage() {
         }
     }, [answers, cogAnswers, router, isDebug]);
 
+    // Don't render until we have data or are in debug mode
     if (answers.length === 0 && !isDebug) return null;
 
     return (
@@ -76,7 +80,6 @@ export default function ResultPage() {
                         <span>Analyse IA (Gemini 1.5 Pro)</span>
                     </h3>
 
-                    {/* Access analysis from store directly inside component to ensure reactivity */}
                     <AnalysisDisplay isDebug={isDebug} />
                 </div>
             )}
@@ -134,5 +137,13 @@ function AnalysisDisplay({ isDebug }: { isDebug: boolean }) {
                 {analysis}
             </div>
         </div>
+    );
+}
+
+export default function ResultPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ResultContent />
+        </Suspense>
     );
 }
