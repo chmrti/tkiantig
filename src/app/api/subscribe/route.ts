@@ -3,6 +3,13 @@ import { Resend } from 'resend';
 
 // Initialize Resend inside the handler to prevent build-time errors if API key is missing
 export async function POST(req: NextRequest) {
+    console.log("Attempting to subscribe...");
+
+    if (!process.env.RESEND_API_KEY) {
+        console.error("❌ RESEND_API_KEY is missing from environment variables.");
+        return NextResponse.json({ error: 'Configuration Error: Missing API Key' }, { status: 500 });
+    }
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     try {
@@ -11,6 +18,8 @@ export async function POST(req: NextRequest) {
         if (!email) {
             return NextResponse.json({ error: 'Email required' }, { status: 400 });
         }
+
+        console.log(`Sending email to ${email}...`);
 
         // Send email
         const { data, error } = await resend.emails.send({
@@ -34,14 +43,15 @@ export async function POST(req: NextRequest) {
         });
 
         if (error) {
-            console.error('Resend error:', error);
-            return NextResponse.json({ error }, { status: 500 });
+            console.error('❌ Resend API error:', error);
+            return NextResponse.json({ error: error.message }, { status: 500 });
         }
 
+        console.log("✅ Email sent successfully:", data);
         return NextResponse.json({ data });
 
-    } catch (e) {
-        console.error('Error subscribing:', e);
-        return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+    } catch (e: any) {
+        console.error('❌ Unexpected error subscribing:', e);
+        return NextResponse.json({ error: e.message || 'Internal Error' }, { status: 500 });
     }
 }
