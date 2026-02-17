@@ -10,17 +10,28 @@ export default function ResultPage() {
     const router = useRouter();
     const [scores, setScores] = useState<Record<string, number>>({});
 
+    const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const isDebug = searchParams?.get('debug') === 'true';
+
     useEffect(() => {
-        if (answers.length === 0) {
+        if (answers.length === 0 && !isDebug) {
             router.replace('/');
             return;
         }
 
         const calculatedScores = computeScores(answers, cogAnswers);
         setScores(calculatedScores);
-    }, [answers, cogAnswers, router]);
 
-    if (answers.length === 0) return null;
+        // Mock data for debug
+        if (isDebug && Object.keys(calculatedScores).length === 0) {
+            setScores({
+                VD: 75, TA: 40, PA: 60, RS: 85,
+                PF: 30, SE: 55, LC: 90, CP: 20
+            });
+        }
+    }, [answers, cogAnswers, router, isDebug]);
+
+    if (answers.length === 0 && !isDebug) return null;
 
     return (
         <div className="max-w-[900px] mx-auto min-h-screen p-8 animate-in fade-in duration-700">
@@ -58,7 +69,7 @@ export default function ResultPage() {
                 </p>
             </div>
 
-            {answers.length > 0 && (
+            {(answers.length > 0 || isDebug) && (
                 <div className="bg-white/5 border border-white/10 rounded-lg p-8 animate-in slide-in-from-bottom-4 duration-1000 delay-500 mb-10">
                     <h3 className="font-serif text-xl mb-6 flex items-center gap-2">
                         <span>🧠</span>
@@ -66,7 +77,7 @@ export default function ResultPage() {
                     </h3>
 
                     {/* Access analysis from store directly inside component to ensure reactivity */}
-                    <AnalysisDisplay />
+                    <AnalysisDisplay isDebug={isDebug} />
                 </div>
             )}
 
@@ -82,8 +93,27 @@ export default function ResultPage() {
     );
 }
 
-function AnalysisDisplay() {
+function AnalysisDisplay({ isDebug }: { isDebug: boolean }) {
     const { analysis, isLoading } = useTestStore();
+
+    if (isDebug && !analysis) {
+        return (
+            <div className="prose prose-invert prose-sm max-w-none text-left">
+                <div className="whitespace-pre-wrap font-sans text-ink1 leading-relaxed">
+                    **[MODE DÉMO - ANALYSE FICTIVE]**
+
+                    ### 1. Style Cognitif
+                    Le candidat démontre une **vélocité décisionnelle élevée** (VD: 75%), suggérant un traitement de l'information rapide et intuitif. Les bio-signaux indiquent peu d'hésitations (faible ratio hover/click), ce qui confirme une grande confiance en ses jugements.
+
+                    ### 2. Leadership
+                    Avec un score de **Résilience Sociale (RS) de 85%**, ce profil est taillé pour la gestion de crise. Il ne cherche pas le consensus mou (PF: 30%) mais tranche dans l'incertitude.
+
+                    ### 3. Risques
+                    Attention au **Conformisme Procédural (CP) très bas (20%)**. Ce candidat pourrait avoir du mal avec les structures hiérarchiques rigides ou les tâches répétitives nécessitant une conformité stricte.
+                </div>
+            </div>
+        );
+    }
 
     if (isLoading && !analysis) {
         return (
