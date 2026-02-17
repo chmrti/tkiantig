@@ -49,7 +49,7 @@ export default function ResultPage() {
                 ))}
             </div>
 
-            <div className="bg-bg2 border border-white/5 rounded-lg p-6 text-center">
+            <div className="bg-bg2 border border-white/5 rounded-lg p-6 text-center mb-10">
                 <h3 className="font-semibold text-sm mb-2">Note Importante</h3>
                 <p className="text-ink3 text-xs max-w-[500px] mx-auto leading-relaxed">
                     Ce résultat est une version simplifiée. Dans la version complète, ces scores sont pondérés par
@@ -58,6 +58,18 @@ export default function ResultPage() {
                 </p>
             </div>
 
+            {answers.length > 0 && (
+                <div className="bg-white/5 border border-white/10 rounded-lg p-8 animate-in slide-in-from-bottom-4 duration-1000 delay-500 mb-10">
+                    <h3 className="font-serif text-xl mb-6 flex items-center gap-2">
+                        <span>🧠</span>
+                        <span>Analyse IA (Gemini 1.5 Pro)</span>
+                    </h3>
+
+                    {/* Access analysis from store directly inside component to ensure reactivity */}
+                    <AnalysisDisplay />
+                </div>
+            )}
+
             <div className="text-center mt-10">
                 <button
                     onClick={() => window.print()}
@@ -65,6 +77,31 @@ export default function ResultPage() {
                 >
                     Imprimer le rapport
                 </button>
+            </div>
+        </div>
+    );
+}
+
+function AnalysisDisplay() {
+    const { analysis, isLoading } = useTestStore();
+
+    if (isLoading && !analysis) {
+        return (
+            <div className="space-y-4 animate-pulse">
+                <div className="h-4 bg-white/10 rounded w-3/4"></div>
+                <div className="h-4 bg-white/10 rounded w-1/2"></div>
+                <div className="h-4 bg-white/10 rounded w-5/6"></div>
+                <p className="text-xs text-ink3 mt-4 text-center">L'IA analyse vos 2500+ points de données...</p>
+            </div>
+        );
+    }
+
+    if (!analysis) return <p className="text-sm text-ink3 italic">Analyse en cours ou non disponible...</p>;
+
+    return (
+        <div className="prose prose-invert prose-sm max-w-none text-left">
+            <div className="whitespace-pre-wrap font-sans text-ink1 leading-relaxed">
+                {analysis}
             </div>
         </div>
     );

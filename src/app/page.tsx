@@ -7,8 +7,18 @@ import CognitiveRunner from '@/components/test/CognitiveRunner';
 import OpenQuestionRunner from '@/components/test/OpenQuestionRunner';
 import TraceCanvas from '@/components/test/TraceCanvas';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function TestPage() {
     const phase = useTestStore((s) => s.phase);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (phase === 'result') {
+            router.push('/result');
+        }
+    }, [phase, router]);
 
     return (
         <>

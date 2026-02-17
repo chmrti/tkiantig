@@ -102,4 +102,5 @@ export type AppState = {
 
     cogQueueIndex: number;
     cogBatch: number[]; // Indices of COGNITIVE array
+    analysis: string | null;
 };

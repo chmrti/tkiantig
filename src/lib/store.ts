@@ -27,6 +27,7 @@ const initialState: AppState = {
     openAnswer: '',
     cogQueueIndex: 0,
     cogBatch: [],
+    analysis: null,
 };
 
 export const useTestStore = create<TestStore>((set, get) => ({
